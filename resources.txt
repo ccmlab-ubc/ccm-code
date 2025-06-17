@@ -1,0 +1,10 @@
+Clean code:
+https://gribblelab.org/9040_FW24/clean_code.html
+https://diedrichsenlab.github.io/guides/04_clean_code.html
+
+Example of what we're looking to produce for the lab: 
+https://www.diedrichsenlab.org/toolboxes/matlab_toolboxes.htm
+
+Google Python style guide (pay attention to writing docstrings):
+https://google.github.io/styleguide/pyguide.html
+ 
