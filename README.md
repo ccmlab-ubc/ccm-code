@@ -1,5 +1,7 @@
 # ccm-code
 
+Check out ```resources.txt``` for big picture view and roadmap. 
+
 Project code and data for PIECE manuscript to get started on creating "toolboxes" for the lab.
 
 1) To install the same Python packages and versions used for all analyses, you can recreate the same virtual environment by entering the following command in your terminal (within your cloned/downloaded project directory):
