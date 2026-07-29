@@ -23,7 +23,7 @@ def decode_json(val):
             return val
     return val
 
-def preprocess(file_paths, subjects, joystick=False):
+def preprocess(file_paths, subjects):
     """
     Load and preprocess experimental data from multiple subjects.
 
@@ -40,9 +40,6 @@ def preprocess(file_paths, subjects, joystick=False):
         passive data files for one subject.
     subjects : list
         Subject ids corresponding to ``file_paths``.
-    joystick : bool, default=False
-        If ``False``, reach endpoints are computed from the recorded
-        trajectories. If ``True``, endpoint computation is skipped.
 
     Returns
     ----------
@@ -63,20 +60,13 @@ def preprocess(file_paths, subjects, joystick=False):
         # and concat into single df
         for p, c in zip(file_paths[k], conditions):
             df_json = pd.read_csv(p)                        # read in participant's data
-            df_temp = df_json.map(json_decode)              # decode JSON strings
+            df_temp = df_json.map(decode_json)              # decode JSON strings
             df_temp["Condition"] = c                        # create condition column
             df_temp["TN"] = np.arange(1, len(df_temp)+1)    # create trial number column
             dfs.append(df_temp)                             # append to dfs
         df_subj = pd.concat(dfs)                            # concat list of dfs into subject df
-
-        # Convert units to CM
-        m_to_cm = 100
-        if all(col in df_subj.columns for col in ["Localize X", "Localize Y"]):
-            df_subj[["Localize X", "Localize Y"]] = df_subj[["Localize X", "Localize Y"]].map(lambda x: x * m_to_cm)
-
-        # Calculate endpoints
-        if not joystick:
-            df_subj[["Endpoint X", "Endpoint Y"]] = df_subj[["X", "Y"]].map(lambda x: x[-1])
+        
+        df_subj[["Endpoint X", "Endpoint Y"]] = df_subj[["X", "Y"]].map(lambda x: x[-1])
 
         # Add subject info and append to data list
         df_subj["SN"] = k + 1
