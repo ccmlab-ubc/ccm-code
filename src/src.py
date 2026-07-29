@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import json
 
-def json_decode(val):
+def decode_json(val):
     """
     Decode a JSON-encoded string (if possible).
 
