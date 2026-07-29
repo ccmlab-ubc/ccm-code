@@ -56,12 +56,12 @@ def preprocess(file_paths, subjects):
     for k, s in enumerate(subjects):
         dfs = []    # list of dataframes for each participant which holds df for each condition
 
-        # Loop through each subjects active and passive data 
+        # Loop through each participant's active and passive data 
         # and concat into single df
-        for p, c in zip(file_paths[k], conditions):
+        for p, cond in zip(file_paths[k], conditions):
             df_json = pd.read_csv(p)                        # read in participant's data
             df_temp = df_json.map(decode_json)              # decode JSON strings
-            df_temp["Condition"] = c                        # create condition column
+            df_temp["Condition"] = cond                        # create condition column
             df_temp["TN"] = np.arange(1, len(df_temp)+1)    # create trial number column
             dfs.append(df_temp)                             # append to dfs
         df_subj = pd.concat(dfs)                            # concat list of dfs into subject df
@@ -77,8 +77,8 @@ def preprocess(file_paths, subjects):
     df = pd.concat(data).reset_index(drop=True)
 
     # Rearrange columns to have subject and trial numbers in first two columns
-    df = df[["TN"] + [c for c in df.columns if c != "TN"]] 
-    df = df[["SN"] + [c for c in df.columns if c != "SN"]] 
+    df = df[["TN"] + [cond for cond in df.columns if cond != "TN"]] 
+    df = df[["SN"] + [cond for cond in df.columns if cond != "SN"]] 
 
     # Master list of all subject data
     return df
