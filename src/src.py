@@ -70,8 +70,9 @@ def preprocess(file_paths, subjects, joystick=False):
         df_subj = pd.concat(dfs)                            # concat list of dfs into subject df
 
         # Convert units to CM
+        m_to_cm = 100
         if all(col in df_subj.columns for col in ["Localize X", "Localize Y"]):
-            df_subj[["Localize X", "Localize Y"]] = df_subj[["Localize X", "Localize Y"]].map(lambda x: x*100)
+            df_subj[["Localize X", "Localize Y"]] = df_subj[["Localize X", "Localize Y"]].map(lambda x: x * m_to_cm)
 
         # Calculate endpoints
         if not joystick:
