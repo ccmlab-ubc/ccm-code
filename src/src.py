@@ -23,7 +23,7 @@ def decode_json(val):
             return val
     return val
 
-def pre_process(file_paths, subjects, joystick=False):
+def preprocess(file_paths, subjects, joystick=False):
     """
     Load and preprocess experimental data from multiple subjects.
 
