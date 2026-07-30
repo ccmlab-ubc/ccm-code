@@ -62,9 +62,8 @@ def preprocess(file_paths, subjects):
             df_json = pd.read_csv(p)                        # read in participant's data
             df_temp = df_json.map(decode_json)              # decode JSON strings
             df_temp["Condition"] = cond                     # create condition column
-            df_temp["TN"] = np.arange(1, len(df_temp)+1)    # create trial number column 
-            dfs.append(df_temp)                             # append to dfs
-        df_subj = pd.concat(dfs)                            # concat list of dfs into subject df
+            df_temp["TN"] = np.arange(1, len(df_temp)+1)    # create trial number column             dfs.append(df_temp)                             # append to dfs
+        df_subj = pd.concat(dfs)                            
         
         df_subj[["Endpoint X", "Endpoint Y"]] = df_subj[["X", "Y"]].map(lambda x: x[-1])
 
