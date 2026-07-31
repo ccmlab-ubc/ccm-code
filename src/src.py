@@ -124,7 +124,6 @@ def remove_outliers(z_thresh, df, reach_col, subj_col, task, abs_cutoff, switch_
         desired_idx = [idx_outlier[i] or (idx_outlier[i - 1] if i > 0 else False) for i in range(len(idx_outlier))]
     elif task == "sdt":
         desired_idx = idx_outlier
-    df["no_fit"] = desired_idx
                                                 
     # Calculate within-subject mean using non-outlier trials only
     df[f"{reach_col}_mean"] = df[~idx_outlier].groupby(subj_col)[f"{reach_col}"].transform("mean")
