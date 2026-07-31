@@ -82,3 +82,64 @@ def preprocess(file_paths, subjects):
 
     # Master list of all subject data
     return df
+
+
+def remove_outliers(z_thresh, df, reach_col, subj_col, task, abs_cutoff, switch_outlier_with_mean=False):
+    """
+    Remove outliers from a kinematic variable using within-subject z-scoring.
+
+    Parameters:
+    ----------
+    z_thresh : float
+        The z-score threshold above which data points are considered outliers.
+    df : pd.DataFrame
+        The input DataFrame containing the kinematic data.
+    reach_col : str
+        The column name of the kinematic variable to clean (e.g., "theta_maxradv").
+
+    Returns:
+    -------
+    pd.DataFrame
+        The DataFrame with additional columns:
+        - <reach_col>_z: z-scored values within each subject (subj_col).
+        - <reach_col>_outlier: boolean flag for outliers.
+        - <reach_col>_mean: mean of non-outlier trials within each subject.
+        - <reach_col>_clean: original values with outliers replaced by NaN.
+    """
+    
+    # hard limit on reach angles above abs_cutoff degrees
+    idx_below_cutoff = np.abs(df[f"{reach_col}"]) <= abs_cutoff 
+    
+    # Calculate z-score hand angle data using non-outlier trials only
+    df[f"{reach_col}_z"] = df.loc[idx_below_cutoff].groupby(subj_col)[reach_col].transform(stats.zscore)
+
+    # Create outlier column
+    idx_outlier = (~idx_below_cutoff) | (np.abs(df[f"{reach_col}_z"]) > z_thresh)
+    df[f"{reach_col}_outlier"] = idx_outlier
+    
+    # Create col to indicate which trials to exclude from MLE (trials after outlier).
+    # Tasks treated differently: adaptation fitting involves predicting next trial; sdt fitting involves predicting
+    # current.
+    if task == "adapt":
+        desired_idx = [idx_outlier[i] or (idx_outlier[i - 1] if i > 0 else False) for i in range(len(idx_outlier))]
+    elif task == "sdt":
+        desired_idx = idx_outlier
+    df["no_fit"] = desired_idx
+                                                
+    # Calculate within-subject mean using non-outlier trials only
+    df[f"{reach_col}_mean"] = df[~idx_outlier].groupby(subj_col)[f"{reach_col}"].transform("mean")
+
+    # Replace outliers with within-subject mean values
+    df[f"{reach_col}_mean"] = df.groupby(subj_col)[f"{reach_col}_mean"].transform(lambda x: x.fillna(np.nanmean(x)))
+
+    # Create final column with "cleaned" hand angles OR replace outliers with NaNs
+    if switch_outlier_with_mean == True:
+        df[f"{reach_col}_clean"] = np.where(df[f"{reach_col}_outlier"] == True,
+                                             df[f"{reach_col}_mean"],
+                                             df[f"{reach_col}"])
+    else:
+        df[f"{reach_col}_clean"] = np.where(df[f"{reach_col}_outlier"] == True,
+                                            np.nan,
+                                            df[f"{reach_col}"])
+
+    return df
