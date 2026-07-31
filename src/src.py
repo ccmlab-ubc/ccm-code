@@ -116,12 +116,6 @@ def remove_outliers(z_thresh, df, reach_col, subj_col, task, abs_cutoff, switch_
     # Create outlier column
     idx_outlier = (~idx_below_cutoff) | (np.abs(df[f"{reach_col}_z"]) > z_thresh)
     df[f"{reach_col}_outlier"] = idx_outlier
-    
-    # Create col to indicate which trials to exclude from MLE (trials after outlier).
-    # Tasks treated differently: adaptation fitting involves predicting next trial; sdt fitting involves predicting
-    # current.
-    if task == "adapt":
-        desired_idx = [idx_outlier[i] or (idx_outlier[i - 1] if i > 0 else False) for i in range(len(idx_outlier))]
                                                 
     # Calculate within-subject mean using non-outlier trials only
     df[f"{reach_col}_mean"] = df[~idx_outlier].groupby(subj_col)[f"{reach_col}"].transform("mean")
