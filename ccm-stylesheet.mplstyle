@@ -1,0 +1,40 @@
+# Typography & Text
+font.size: 12.0
+axes.labelsize: 14.0
+axes.titlesize: 14.0
+xtick.labelsize: 11.0
+ytick.labelsize: 11.0
+legend.fontsize: 11.0
+
+# Axes Spines & Structure
+axes.spines.top: False
+axes.spines.right: False
+axes.spines.left: True
+axes.spines.bottom: True
+axes.linewidth: 0.8
+axes.facecolor: "white"
+axes.grid: False
+
+# Ticks
+xtick.direction: "out"
+ytick.direction: "out"
+xtick.major.size: 4.0
+ytick.major.size: 4.0
+xtick.major.width: 0.8
+ytick.major.width: 0.8
+
+# Lines & Plots
+lines.linewidth: 1.5
+lines.markeredgewidth: 0.8
+markers.fillstyle: "full"
+
+# Legend Layout
+legend.frameon: False
+legend.loc: "upper right"
+
+# Figure Size & Export Defaults
+figure.figsize: 4.5, 3.5
+figure.dpi: 120
+savefig.dpi: 300
+savefig.bbox: "tight"
+savefig.transparent: False
